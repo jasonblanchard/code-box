@@ -1,9 +1,5 @@
-require 'net/telnet'
+require 'net/http'
 
-host = Net::Telnet::new("Host" => '192.168.59.103', "Port" => "8081")
-
-host.cmd('a=\'cats\'; puts "hello #{a}"') do |resp|
-  puts resp
-end
-
-host.close
+url = URI.parse('http://192.168.59.103:8081')
+resp = Net::HTTP.post_form url, {'code' => 'a = "cat"; puts "hello #{a}"'}
+puts resp.body

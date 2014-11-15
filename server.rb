@@ -1,21 +1,24 @@
 require 'eventmachine'
 require "stringio"
+require 'em-http-server'
+require 'cgi'
 
-module EchoServer
-  def post_init
-    send_data "Enter some code:\n\n"
-  end
-
-  def receive_data data
-    puts "Executing code"
-    code = data.to_s
+class HTTPHandler < EM::HttpServer::Server
+  
+  def process_http_request
+    response = EM::DelegatedHttpResponse.new(self)
+    response.status = 200
+    response.content_type 'text/html'
+    code = CGI.parse(@http_content)['code'][0]
+    puts "Executing `#{code}`"
     output = eval("begin $stdout = StringIO.new; #{code}; $stdout.string;
   ensure $stdout = STDOUT end")
-    send_data output
+    response.content = output
+    response.send_response
   end
+
 end
 
-EventMachine.run {
-  EventMachine.start_server "0.0.0.0", 8081, EchoServer
-  puts 'running echo server on 8081'
-}
+EM::run do
+  EM::start_server("0.0.0.0", 8081, HTTPHandler)
+end
