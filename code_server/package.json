@@ -1,0 +1,12 @@
+{
+  "name": "code-box-server",
+  "version": "0.0.1",
+  "description": "Server that executes code in a docker container",
+  "main": "index.js",
+  "author": "jas.blanchard@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "express": "*",
+    "body-parser": "~1.9.2"
+  }
+}
