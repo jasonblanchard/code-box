@@ -11,8 +11,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/', function(req, res){
   
-  var code = req.body.code;
-  var command = 'ruby -e "' + jsesc(code, {'quotes': 'double'}) + '"';
+  var code = jsesc(req.body.code, {'quotes':'double'});
+  
+  var code = code.replace(/\'/g, "'\\''");
+
+  var command = 'ruby -e "' + code + '"';
   var safeCommand = "su -m coder -c '" + command + "'";
 
   var response = {
