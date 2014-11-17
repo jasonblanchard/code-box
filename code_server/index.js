@@ -11,8 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/', function(req, res){
   
-  var code = jsesc(req.body.code, {'quotes':'double'});
-  
+  var code = jsesc(JSON.parse(req.body.input).code, {'quotes':'double'}); 
   var code = code.replace(/\'/g, "'\\''");
 
   var command = 'ruby -e "' + code + '"';
